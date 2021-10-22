@@ -1,0 +1,20 @@
+{
+  "timeZone": "Europe/London",
+  "exceptionLogging": "STACKDRIVER",
+  "runtimeVersion": "V8",
+  "dependencies": {
+    "libraries": [
+      {
+        "userSymbol": "bmScrvizConnector",
+        "libraryId": "1sEEcPeh7GZ6QoGIRFP6rbbFU89SIM9DxPTO_bKbDIYWNFD1cZ5n6T3tK",
+        "version": "4",
+        "developmentMode": false
+      },
+      {
+        "userSymbol": "bmPreFiddler",
+        "libraryId": "13JUFGY18RHfjjuKmIRRfvmGlCYrEkEtN6uUm-iLUcxOUFRJD-WBX-tkR",
+        "version": "21"
+      }
+    ]
+  }
+}
