@@ -16,7 +16,4 @@ function sheetDump(data) {
     }))
     .dumpValues()
   })
-
-
-
 }
