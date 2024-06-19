@@ -1,5 +1,5 @@
 # Google Apps Script Project: consumeScrvizconnector
-This repo (consumeScrvizconnector) was automatically updated on 12/6/2021, 11:55:39 AM by GasGit
+This repo (consumeScrvizconnector) was automatically updated on 6/19/2024, 4:23:36 PM by GasGit
 
 For more information on gasgit, see the [desktop liberation site](https://ramblings.mcpher.com/drive-sdk-and-github/migrategasgit/ "desktop liberation")
 
@@ -27,11 +27,11 @@ bmPreFiddler| bmPreFiddler|13JUFGY18RHfjjuKmIRRfvmGlCYrEkEtN6uUm-iLUcxOUFRJD-WBX
 *library*|*identifier*|*key*|*version*|*dev mode*|*source*|
 --- | --- | --- | --- | --- | --- 
 bmScrvizConnector| bmScrvizConnector|1sEEcPeh7GZ6QoGIRFP6rbbFU89SIM9DxPTO_bKbDIYWNFD1cZ5n6T3tK|4|no|[here](libraries/bmScrvizConnector "library source")
-bmVizzyCache| bmVizzyCache|1SohIo0pSlXSt2SKNf3iX2ZcbzE_N0F4BocnKpGuaXgyxx1X6s1nDhjZK|6|no|[here](libraries/bmVizzyCache "library source")
+bmVizzyCache| bmVizzyCache|1SohIo0pSlXSt2SKNf3iX2ZcbzE_N0F4BocnKpGuaXgyxx1X6s1nDhjZK|6|no|no
 bmPreFiddler| bmPreFiddler|13JUFGY18RHfjjuKmIRRfvmGlCYrEkEtN6uUm-iLUcxOUFRJD-WBX-tkR|21|no|[here](libraries/bmPreFiddler "library source")
-bmLibraryReporter| bmLibraryReporter|1D_lWK-jU53wxMA2-NxSjiyu7Uze_GDDqBKTsQnCgPhyUmmSLv0bfTNPX|8|no|[here](libraries/bmLibraryReporter "library source")
-bmLibraryTracking| bmLibraryTracking|1GIpX-loeYv2swfT2mcYCUvduAXtoYdzenzIYXt4M_1YLmlN7eMrO1h_P|3|no|[here](libraries/bmLibraryTracking "library source")
-bmFiddler| bmFiddler|13EWG4-lPrEf34itxQhAQ7b9JEbmCBfO8uE4Mhr99CHi3Pw65oxXtq-rU|17|no|[here](libraries/bmFiddler "library source")
+bmFiddler| bmFiddler|13EWG4-lPrEf34itxQhAQ7b9JEbmCBfO8uE4Mhr99CHi3Pw65oxXtq-rU|29|no|[here](libraries/bmFiddler "library source")
+bmLibraryReporter| bmLibraryReporter|1D_lWK-jU53wxMA2-NxSjiyu7Uze_GDDqBKTsQnCgPhyUmmSLv0bfTNPX|14|no|[here](libraries/bmLibraryReporter "library source")
+bmLibraryTracking| bmLibraryTracking|1GIpX-loeYv2swfT2mcYCUvduAXtoYdzenzIYXt4M_1YLmlN7eMrO1h_P|7|no|[here](libraries/bmLibraryTracking "library source")
 ### Enabled Google Services
 no libraries discovered
 ### Scopes required
