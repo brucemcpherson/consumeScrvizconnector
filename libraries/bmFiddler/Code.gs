@@ -9,6 +9,10 @@
 */
 function Fiddler(sheet) {
 
+  // for library tracking
+  // will only stamp once
+  Trackmyself.stamp()
+
   var self = this;
   var _values,
     _headerOb = null,
@@ -26,6 +30,7 @@ function Fiddler(sheet) {
     _flatOptions = null,
     _formulaOb = null,
     _formulas,
+    _custom = null,
     _defaultFlat = {
       flatten: true,
       objectSeparator: ".",
@@ -67,7 +72,7 @@ function Fiddler(sheet) {
   * .row an object with all the properties/values for the current row
   * .fiddler the fiddler obkect
   */
-  var defaultFunctions_ = {
+  var _defaultFunctions = {
 
     /**
      * used to compare two values
@@ -152,7 +157,7 @@ function Fiddler(sheet) {
   };
 
   // maybe a later version we'll allow changing of default functions
-  _functions = defaultFunctions_;
+  _functions = _defaultFunctions;
 
   // local functions
   const _isUndef = (value) => typeof value === typeof undefined
@@ -169,6 +174,21 @@ function Fiddler(sheet) {
    * @property {*[[]} values - The  values - ready for use with setValues
    * @property {Range} range - The range it applies to
    */
+
+  /**
+   * set a custom value in the fiddler - can be anything
+   * @param {*} value value to set
+   * @return {Fiddler} self
+   */
+  self.setCustom = (value) => {
+    _custom = value;
+    return self;
+  }
+  /**
+   * get a custom value in the fiddler - can be anything
+   * @return {*} custom value
+   */
+  self.getCustom = () => _custom
 
   /**
    * convert columns to values
@@ -363,7 +383,6 @@ function Fiddler(sheet) {
         headers: _headerOb,
         rowOffset: i,
         columnOffset: columnIndex,
-        fiddler: self,
         values: values,
         row: _dataOb[i],
         fiddler: self
@@ -388,7 +407,6 @@ function Fiddler(sheet) {
         headers: _headerOb,
         rowOffset: rowIndex,
         columnOffset: 0,
-        fiddler: self,
         values: self.getHeaders().map(function (k) {
           return row[k];
         }),
@@ -555,6 +573,12 @@ function Fiddler(sheet) {
    */
   self.getSelf = () => self
 
+
+  /**
+   * apply filter when getting values
+   */
+
+
   /**
    * get tidy formats
    * @return {boolean} tidyFormats whether to tidy formats in space outside the data being written
@@ -631,7 +655,8 @@ function Fiddler(sheet) {
       Object.keys(format).forEach(function (f) {
         var method = 'set' + f.slice(0, 1).toUpperCase() + f.slice(1);
         // patch in case its plural 
-        method = method.replace(/s$/, "").replace(/ies$/, "y");
+        // https://github.com/brucemcpherson/bmFiddler/issues/2 - v29
+        method = method.replace(/ies$/, "y").replace(/s$/, "");
         if (typeof rangeList[method] !== "function") throw 'unknown format ' + method;
         rangeList[method](format[f]);
       })
@@ -1021,12 +1046,12 @@ function Fiddler(sheet) {
 
   //-----
 
-  const _columnate = (ob,columnName) => {
+  const _columnate = (ob, columnName) => {
     if (self.getHeaders().indexOf(columnName) === -1) {
       throw new Error(columnName + ' is not a valid header name');
     }
     // transpose the data
-    return  ob.map(function (d) {
+    return ob.map(function (d) {
       return d[columnName];
     });
   }
@@ -1035,8 +1060,8 @@ function Fiddler(sheet) {
   * @param {string} columnName the given column
   * @return {*[]} the column values
   */
-  self.getColumnValues =  (columnName) => _columnate (_dataOb, columnName);
-  self.getColumnFormulaValues =  (columnName) => _formulaOb && _columnate (_formulaOb, columnName);
+  self.getColumnValues = (columnName) => _columnate(_dataOb, columnName);
+  self.getColumnFormulaValues = (columnName) => _formulaOb && _columnate(_formulaOb, columnName);
 
   /**
   * get the values for a given row
@@ -1089,8 +1114,10 @@ function Fiddler(sheet) {
     // get the range 
     var range = sheet.getDataRange();
 
+    const values = range.getValues()
+
     // set the values
-    return self.setValues(range.getValues());
+    return self.setValues(values);
 
   };
 
@@ -1191,11 +1218,11 @@ function Fiddler(sheet) {
   };
 
   self.getColumnsWithFormulas = () => {
-    if(!self.getFormulaData()) throw new Error (`First use needFormulas() to bring in formulas before changing anything`)
+    if (!self.getFormulaData()) throw new Error(`First use needFormulas() to bring in formulas before changing anything`)
 
     // now find which columns have any formulas
-    return Array.from(self.getHeaders().reduce ((p,c)=> {
-      if (self.getFormulaData().some(f=>f[c])) p.add(c)
+    return Array.from(self.getHeaders().reduce((p, c) => {
+      if (self.getFormulaData().some(f => f[c])) p.add(c)
       return p
     }, new Set()))
   }
@@ -1209,13 +1236,13 @@ function Fiddler(sheet) {
    * @param {boolean} [args.includeSheetName = false]
    * @returns {string[]}
    */
-  self.getA1s = ({columnNames , options , sheet, includeSheetName = false}) => 
-    self.getRangeList(columnNames , options , sheet)
+  self.getA1s = ({ columnNames, options, sheet, includeSheetName = false }) =>
+    self.getRangeList(columnNames, options, sheet)
       .getRanges()
-      .map (r=> {
+      .map(r => {
         return (includeSheetName ? `'${r.getSheet().getName()}'!` : '') + r.getA1Notation()
       })
-  
+
   /**
    * get the names of columns occurring between start and finish
    * @param {string} [start=the first one] start column name (or the first one)
@@ -1682,7 +1709,7 @@ function Fiddler(sheet) {
   */
   self.init = function () {
     // how to handle multi level dataa
-    self.setFlattener(_defaultFlat) 
+    self.setFlattener(_defaultFlat)
 
     if (_values) {
       _headerOb = make_headerOb();
@@ -1778,7 +1805,7 @@ function Fiddler(sheet) {
 
         }
         if (p.hasOwnProperty(key)) {
-          if (!renameDups_) {
+          if (!_renameDups) {
             throw 'duplicate column header ' + key;
           } else {
             // generate a unique name
@@ -1863,6 +1890,108 @@ function Fiddler(sheet) {
 
   else if (typeof sheet !== typeof undefined) {
     throw 'sheet was passed in constructor but could not be opened';
+  }
+
+
+  /**
+   * @typdef JoinHand
+   * @property {[*]} data the array of data to join
+   * @property {function} [makeKey] function to take a row and make a key
+   * @property {function} [makeColumnName] function to rename a column name - default is to retain (dups would be dropped)
+   * 
+   */
+
+  /**
+   * default function to compare keys
+   * @param {*} a the first key
+   * @param {*} b the second key
+   * @returns {boolean} whether they should be treated as equal
+   */
+  const _defaultJoinCompareKeys = ((a, b) => a === b)
+
+  /**
+   * default function to make key 
+   * @param {object} row the input row
+   * @returns {*} the made key
+   */
+  const _defaultJoinMakeKey = (row) => {
+    if (typeof row.id === typeof undefined) throw new Error('row.id was undefined using default _defaultJoinMakeKey')
+    return row.id
+  }
+
+
+  const _joinTypes = ['inner', 'full', 'left', 'right']
+
+  /**
+   * merge 2 sets of data
+   * @param {object} join
+   * @param {JoinHand} join.left definition 
+   * @param {JoinHand} join.right definition 
+   * @param {function} [join.compareKeys] function to compare keys from makekey
+   * @param {string} [join.joinType='inner'] 'inner' | 'outer' | 'left' | 'right'
+   * @returns {object[]} a new set of data that can be used with getData() to create a new fiddler 
+   */
+
+  self.join = ({
+    left,
+    right,
+    compareKeys = _defaultJoinCompareKeys,
+    joinType = 'inner'
+  }) => {
+    const makeKey = (a, aRow) => (a.makeKey || _defaultJoinMakeKey)(aRow)
+    const compare = (a, b, aRow, bRow) => compareKeys(makeKey(a, aRow), makeKey(b, bRow))
+    const renamer = (a, aRow) => a.makeColumnName ? Object.keys(aRow).reduce((p, c) => {
+      p[a.makeColumnName(c)] = aRow[c]
+      return p
+    }, {}) : aRow
+
+    // TODO - rename column name clashes
+    const pusher = (a, b, outer = false, reverse = false) => {
+      return a.data.reduce((p, aRow) => {
+        const matches = b.data.filter(bRow => reverse ? compare(b, a, bRow, aRow) : compare(a, b, aRow, bRow))
+        if (matches.length) {
+          matches.forEach(match => p.push({
+            ...renamer(a, aRow),
+            ...renamer(b, match)
+          }))
+        } else if (outer) {
+          p.push({
+            ...renamer(a, aRow)
+          })
+        }
+        return p;
+      }, [])
+    }
+
+
+    // todo - rename propertyname clash
+    if (joinType === 'inner') {
+      return pusher(left, right)
+    }
+
+    else if (joinType === 'left') {
+      return pusher(left, right, true)
+    }
+
+    else if (joinType === 'right') {
+      return pusher(right, left, true, true)
+    }
+
+    else if (joinType === 'full') {
+      // first to a left join
+      const p = pusher(left, right, true)
+      // now we need to mop up the right who didn't make it
+      return p.concat(right.data
+        .filter(rightRow => !left.data.some(leftRow => compare(left, right, leftRow, rightRow)))
+        .map(rightRow => ({
+          ...renamer(right, rightRow)
+        })))
+    }
+
+    else {
+      throw new Error(`${joinType} should be one of ${_joinTypes.join(",")}`)
+    }
+
   }
 
 };
