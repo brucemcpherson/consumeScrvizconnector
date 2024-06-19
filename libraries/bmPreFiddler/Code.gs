@@ -4,6 +4,7 @@
  */
 function PreFiddler() {
 
+  
   const getss = ({ id }) => {
     return id ? SpreadsheetApp.openById(id) : SpreadsheetApp.getActiveSpreadsheet()
   }
@@ -16,6 +17,7 @@ function PreFiddler() {
     if (!sheet && createIfMissing) {
       sheet = ss.insertSheet(sheetName)
     }
+    if (!sheet) console.log("Couldn't open sheet " + sheetName)
     return sheet
   }
 
